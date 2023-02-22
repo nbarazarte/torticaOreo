@@ -5,6 +5,7 @@
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('csv-parser');
 const fs = require('fs');
+let allErrors = []
 /*********************************************** Lee las cabeceras (contadores) y filas del archivo de familias ***************************************************************/
 function leerCabeceras(file, type,contadores,nombreFamilia,host){
   return new Promise((resolve, reject) => {
@@ -19,9 +20,7 @@ function leerCabeceras(file, type,contadores,nombreFamilia,host){
         if (miFuncion.length === 0){
             resolve(headers);
         }
-        
         reject(new Error(`Faltan contadores: ${miFuncion} en la familia ${nombreFamilia} del host ${host} - Hora: ${new Date} \n`));          
-        
       })
   })
 }
@@ -121,12 +120,39 @@ function leerDirectorio(){
           const fecha = `${familia.slice(58, -8).split('')[6]}${familia.slice(58, -8).split('')[7]}/${familia.slice(58, -8).split('')[4]}${familia.slice(58, -8).split('')[5]}/${familia.slice(58, -8).split('')[0]}${familia.slice(58, -8).split('')[1]}${familia.slice(58, -8).split('')[2]}${familia.slice(58, -8).split('')[3]}`
           const hora = `${familia.slice(66,-4).split('')[0]}${familia.slice(66,-4).split('')[1]}:${familia.slice(66,-4).split('')[2]}${familia.slice(66,-4).split('')[3]}`
           const fechaHoraEjecucion = new Date().toLocaleString("es-ES", { timeZone: "America/Caracas" });
-          
           await leerCabeceras(file, {}, contadores,nombreFamilia,host);//console.log("Columnas:", columns[4]); //console.log(columns.length); 
           console.log(`✔ Finalizó la comprobación de los contadores de la familia ${nombreFamilia} de ${host} -Fecha: ${fecha} Hora: ${hora} - Inicio: ${fechaHoraEjecucion} ⁙\n`)
         
+          let logError = {'errores': '0' }
+          allErrors.push(logError)
+
+          const csvWriter = createCsvWriter({
+            path:  './PRUEBAS PYTHON/convertidos/logUMTS.csv',
+            header: [
+              {id: 'errores', title:'Errores'},  
+            ] 
+          });
+    
+           csvWriter
+           .writeRecords(allErrors)
+           .then(); //()=> console.log(`⁙ Creando el archivo de contadores faltantes ⁙`)
+
         } catch (error) {
             console.error(`🐞 Error:`, error.message);
+
+            let logError = {'errores': error.message }
+            allErrors.push(logError)
+
+            const csvWriter = createCsvWriter({
+              path:  './PRUEBAS PYTHON/convertidos/logUMTS.csv',
+              header: [
+                {id: 'errores', title:'Errores'},  
+              ] 
+            });
+      
+             csvWriter
+             .writeRecords(allErrors)
+             .then(); //()=> console.log(`⁙ Creando el archivo de contadores faltantes ⁙`)
         }
 }
 

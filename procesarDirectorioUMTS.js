@@ -128,7 +128,7 @@ async function procesar(familia, contadores,host) {
        //console.log(arregloFinal);
 /*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/
         const csvWriter = createCsvWriter({
-        path:  './PRUEBAS PYTHON/convertidos/'+nombreFamilia+'.csv',
+        path:  './PRUEBAS PYTHON/convertidos/familiasContadores/'+nombreFamilia+'_'+host+'.csv',
         header: newHeader
         /*header: [
           {id: 'Result Time', title: 'Result Time'},
@@ -142,7 +142,7 @@ async function procesar(familia, contadores,host) {
 
        csvWriter
        .writeRecords(arregloFinal)
-       .then( ()=> console.log(`⁙ Creando el archivo de contadores ${nombreFamilia}.csv de la familia ${nombreFamilia} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`) ); 
+       .then( ()=> console.log(`⁙ Creando el archivo de contadores ${nombreFamilia}.csv de la familia ${nombreFamilia} ${host} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`) ); 
 /********************************************************************************************************************************************************************************/
       } catch (error) {
           console.error(`🐞 Error:`, error.message);

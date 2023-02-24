@@ -123,7 +123,7 @@ function leerDirectorio(){
           await leerCabeceras(file, {}, contadores,nombreFamilia,host);//console.log("Columnas:", columns[4]); //console.log(columns.length); 
           console.log(`✔ Finalizó la comprobación de los contadores de la familia ${nombreFamilia} de ${host} -Fecha: ${fecha} Hora: ${hora} - Inicio: ${fechaHoraEjecucion} ⁙\n`)
         
-          let logError = {'errores': '0' }
+          let logError = {'errores': '' }
           allErrors.push(logError)
 
           const csvWriter = createCsvWriter({

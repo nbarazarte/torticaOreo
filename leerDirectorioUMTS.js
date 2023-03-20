@@ -38,8 +38,7 @@ function buscarContadoresFaltantes(familia, contadores, head,host){
 function leerDirectorio(){
 
     const files = fs.readdirSync('./PRUEBAS PYTHON') 
-    let nombreFamilia
-    let host
+    let nombreFamilia, host, contadores
     const ruta = './PRUEBAS PYTHON/'
     for (const x of files) {
     
@@ -47,67 +46,67 @@ function leerDirectorio(){
       host = x.slice(0, 6)
   
       if(nombreFamilia === '50331648'){
-        const contadores = ['50331745', '50331746']
+        contadores = ['50331745', '50331746']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
    
        if(nombreFamilia === '67109365'){
-        const contadores = ['67179329','67179330','67179331','67179332','67179333','67179334','67179335','67179336','67179337','67179338','67179343','67179344','67179345','67179346','67179347','67179348','67179457','67179458','67179459','67179460','67179461','67179462','67179463','67179464','67179465','67179466','67179471','67179472','67179473','67179474','67179476','67190586']
+        contadores = ['67179329','67179330','67179331','67179332','67179333','67179334','67179335','67179336','67179337','67179338','67179343','67179344','67179345','67179346','67179347','67179348','67179457','67179458','67179459','67179460','67179461','67179462','67179463','67179464','67179465','67179466','67179471','67179472','67179473','67179474','67179476','67190586']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
   
       if(nombreFamilia === '67109372'){
-        const contadores = ['67179921','67179922','67179923','67179924','67179925','67179926','67179927','67179928']
+        contadores = ['67179921','67179922','67179923','67179924','67179925','67179926','67179927','67179928']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
            
       if(nombreFamilia === '67109368'){
-        const contadores = ['67179825','67179826','67179827','67179828']
+        contadores = ['67179825','67179826','67179827','67179828']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
       
       if(nombreFamilia === '67109471'){
-        const contadores = ['67192486','67203850','67203932','73403761','73410507','73441239']
+        contadores = ['67192486','67203850','67203932','73403761','73410507','73441239']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
       
       if(nombreFamilia === '67109369'){
-        const contadores = ['67179864','67190406','67190407','67192610','67192611','67193611','67193612']
+        contadores = ['67179864','67190406','67190407','67192610','67192611','67193611','67193612']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }    
       
       if(nombreFamilia === '67109367'){
-        const contadores = ['67190404','67190405','67192608','67192609','67193609','67193610']
+        contadores = ['67190404','67190405','67192608','67192609','67193609','67193610']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }      
       
       if(nombreFamilia === '67109508'){
-        const contadores = ['67192690','67192689']
+        contadores = ['67192690','67192689']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }      
       
       if(nombreFamilia === '67109391'){
-        const contadores = ['67192584','73421766']
+        contadores = ['67192584','73421766']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }     
       
       if(nombreFamilia === '67109373'){
-        const contadores = ['67179967','67190408','67190409','67192612','67192613','67193613','67193614','73424888','73424889']
+        contadores = ['67179967','67190408','67190409','67192612','67192613','67193613','67193614','73424888','73424889']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }      
       
       if(nombreFamilia === '82834952'){
-        const contadores = ['73410510','73410511']
+        contadores = ['73410510','73410511']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }     
       
       if(nombreFamilia === '82863958'){
-        const contadores = ['73424897','73424899']
+        contadores = ['73424897','73424899']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }     
       
       if(nombreFamilia === '67109376'){
-        const contadores = ['67179778','67179779','67179781','67179782','73421882','73421883','73421886','73422166']
+        contadores = ['67179778','67179779','67179781','67179782','73421882','73421883','73421886','73422166']
         comprobarCrudosCabeceras(ruta+x,contadores, host)
       }
     }
@@ -127,7 +126,7 @@ function leerDirectorio(){
           allErrors.push(logError)
 
           const csvWriter = createCsvWriter({
-            path:  './PRUEBAS PYTHON/convertidos/logUMTS.csv',
+            path:  './logUMTS.csv',
             header: [
               {id: 'errores', title:'Errores'},  
             ] 
@@ -144,7 +143,7 @@ function leerDirectorio(){
             allErrors.push(logError)
 
             const csvWriter = createCsvWriter({
-              path:  './PRUEBAS PYTHON/convertidos/logUMTS.csv',
+              path:  './CONVERTIDOS/logUMTS.csv',
               header: [
                 {id: 'errores', title:'Errores'},  
               ] 

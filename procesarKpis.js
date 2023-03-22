@@ -133,25 +133,34 @@ function leerDirectorio_unificado() {
     } */
   }
 }
+
+function recorrerFamiliaContadores(rows, contadores) {
+  let newHeader = [],
+    arreglo = [];
+  for (let y = 0; y < rows.length; y++) {
+    let miObjeto = {};
+    for (let x = 0; x < contadores.length; x++) {
+      miObjeto[contadores[x]] = rows[y][contadores[x]];
+      newHeader[x] = { id: contadores[x], title: contadores[x] };
+    }
+    arreglo.push(miObjeto);
+  }
+
+  return arreglo;
+}
+
 async function procesarFamilia(familia, contadores, kpi) {
   try {
-    const arreglo = [],
+    let arreglo = [],
       arregloFinal = [];
     const fechaHoraEjecucion = new Date().toLocaleString("es-ES", {
       timeZone: "America/Caracas",
     });
     const rows = await leerFilas(familia, {});
-    let newHeader = [],
-      newHeaderFinal = [];
+    //let newHeader = [],
+    newHeaderFinal = [];
 
-    for (let y = 0; y < rows.length; y++) {
-      let miObjeto = {};
-      for (let x = 0; x < contadores.length; x++) {
-        miObjeto[contadores[x]] = rows[y][contadores[x]];
-        newHeader[x] = { id: contadores[x], title: contadores[x] };
-      }
-      arreglo.push(miObjeto);
-    }
+    arreglo = recorrerFamiliaContadores(rows, contadores);
 
     for (let y = 1; y < arreglo.length; y++) {
       let miObjeto2 = {};

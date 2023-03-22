@@ -47,25 +47,54 @@ function leerDirectorio_unificado() {
 
   for (const x of familias) {
     if (x === "50331648") {
-      /*       #FAMILIA 13
-      datax['HSDPA_THROUGHPUT_DEN_NONE']=(datax['50331745'])
-      datax['HSDPA_THROUGHPUT_NUM_NONE']=(datax['50331746']) */
       familia = ruta + x + ".csv";
       contadores = ["50331745", "50331746"];
       kpi = ["HSDPA_THROUGHPUT"];
-      procesarFamilia(
-        familia,
-        columnasComunes.concat(contadores),
-        columnasComunes.concat(kpi)
-      );
-    }
-    /* 
-     if(x === '67109365'){
-      host03 = ruta+x+'_HOST03.csv'
-      host12 = ruta+x+'_HOST12.csv'      
-      contadores = ['67179329','67179330','67179331','67179332','67179333','67179334','67179335','67179336','67179337','67179338','67179343','67179344','67179345','67179346','67179347','67179348','67179457','67179458','67179459','67179460','67179461','67179462','67179463','67179464','67179465','67179466','67179471','67179472','67179473','67179474','67179476','67190586']      
     }
 
+    /*
+    if (x === "67109365") {
+      familia = ruta + x + ".csv";
+      contadores = [
+        "67179329",
+        "67179330",
+        "67179331",
+        "67179332",
+        "67179333",
+        "67179334",
+        "67179335",
+        "67179336",
+        "67179337",
+        "67179338",
+        "67179343",
+        "67179344",
+        "67179345",
+        "67179346",
+        "67179347",
+        "67179348",
+        "67179457",
+        "67179458",
+        "67179459",
+        "67179460",
+        "67179461",
+        "67179462",
+        "67179463",
+        "67179464",
+        "67179465",
+        "67179466",
+        "67179471",
+        "67179472",
+        "67179473",
+        "67179474",
+        "67179476",
+        "67190586",
+      ];
+      kpi = [
+        "U_RRC_SETUP_SUCCESS_RATIO_DEN_NONE",
+        "U_RRC_SETUP_SUCCESS_RATIO_NUM_NONE",
+      ];
+    }
+    /*
     if(x === '67109372'){
       host03 = ruta+x+'_HOST03.csv'
       host12 = ruta+x+'_HOST12.csv'      
@@ -131,6 +160,12 @@ function leerDirectorio_unificado() {
       host12 = ruta+x+'_HOST12.csv'      
       contadores = ['67179778','67179779','67179781','67179782','73421882','73421883','73421886','73422166']
     } */
+
+    procesarFamilia(
+      familia,
+      columnasComunes.concat(contadores),
+      columnasComunes.concat(kpi)
+    );
   }
 }
 
@@ -162,26 +197,37 @@ async function procesarFamilia(familia, contadores, kpi) {
 
     arreglo = recorrerFamiliaContadores(rows, contadores);
 
-    for (let y = 1; y < arreglo.length; y++) {
-      let miObjeto2 = {};
-      let res;
-
-      if (Number(arreglo[y]["50331745"]) == 0) {
-        res = 0;
-      } else {
-        res = Number(arreglo[y]["50331746"]) / Number(arreglo[y]["50331745"]);
-      }
-
-      for (let x = 0; x < kpi.length; x++) {
-        if (kpi[x] === "HSDPA_THROUGHPUT") {
-          miObjeto2[kpi[x]] = res;
-        } else {
-          miObjeto2[kpi[x]] = rows[y][kpi[x]];
+    let fam = familia.slice(13, 21);
+    switch (fam) {
+      case fam:
+        "50331648";
+        
+        for (let y = 1; y < arreglo.length; y++) {
+          let miObjeto2 = {};
+          let res;
+    
+          if (Number(arreglo[y]["50331745"]) == 0) {
+            res = 0;
+          } else {
+            res = Number(arreglo[y]["50331746"]) / Number(arreglo[y]["50331745"]);
+          }
+    
+          for (let x = 0; x < kpi.length; x++) {
+            if (kpi[x] === "HSDPA_THROUGHPUT") {
+              miObjeto2[kpi[x]] = res;
+            } else {
+              miObjeto2[kpi[x]] = rows[y][kpi[x]];
+            }
+    
+            newHeaderFinal[x] = { id: kpi[x], title: kpi[x] };
+          }
+          arregloFinal.push(miObjeto2);
         }
 
-        newHeaderFinal[x] = { id: kpi[x], title: kpi[x] };
-      }
-      arregloFinal.push(miObjeto2);
+        break;
+
+      default:
+        break;
     }
 
     /*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/

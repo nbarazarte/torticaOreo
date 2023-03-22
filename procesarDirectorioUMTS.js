@@ -174,6 +174,10 @@ function leerDirectorio_procesar() {
       ];
     }
 
+    if (nombreFamilia === "67109390") {
+      contadores = ["67202894", "67189840", "73410491", "73403763", "67202932"];
+    }
+
     procesar(ruta + x, columnasComunes.concat(contadores), host);
   }
 }

@@ -199,6 +199,11 @@ function leerDirectorio() {
       ];
       comprobarCrudosCabeceras(ruta + x, contadores, host);
     }
+
+    if (nombreFamilia === "67109390") {
+      contadores = ["67202894", "67189840", "73410491", "73403763", "67202932"];
+      comprobarCrudosCabeceras(ruta + x, contadores, host);
+    }
   }
 }
 

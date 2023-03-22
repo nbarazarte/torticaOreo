@@ -207,6 +207,12 @@ function leerDirectorio_procesar() {
       ];
     }
 
+    if (x === "67109390") {
+      host03 = ruta + x + "_HOST03.csv";
+      host12 = ruta + x + "_HOST12.csv";
+      contadores = ["67202894", "67189840", "73410491", "73403763", "67202932"];
+    }
+
     procesarHost(host03, host12, columnasComunes.concat(contadores));
   }
 }

@@ -2,56 +2,64 @@
 //  Desarrollado por: Coordinación de Estadísticas Operativas (CEO)    *
 //  Fecha: 19/02/2023                                                  *
 /***********************************************************************/
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const { log } = require('console');
-const csv = require('csv-parser');
-const fs = require('fs');
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+const { log } = require("console");
+const csv = require("csv-parser");
+const fs = require("fs");
 /*********************************************** Lee las cabeceras (contadores) y filas del archivo de familias ***************************************************************/
 
-function leerFilas(file, type){
-    let filas = []
-      return new Promise((resolve, reject) => {
-        fs.createReadStream(file)
-        .on('error', error => {
-          reject(error);
-        })
-        .pipe(csv())
-        .on('data', (row) => {
-          filas.push(row)
-        }).on('end', () => {
-          resolve(filas);
-        });
+function leerFilas(file, type) {
+  let filas = [];
+  return new Promise((resolve, reject) => {
+    fs.createReadStream(file)
+      .on("error", (error) => {
+        reject(error);
       })
+      .pipe(csv())
+      .on("data", (row) => {
+        filas.push(row);
+      })
+      .on("end", () => {
+        resolve(filas);
+      });
+  });
 }
 
-function leerDirectorio_unificado(){
-
-  const files = fs.readdirSync('./UNIFICADOS/') 
+function leerDirectorio_unificado() {
+  const files = fs.readdirSync("./UNIFICADOS/");
   let familia;
   let familias = [];
-  const ruta = './UNIFICADOS/'
+  const columnasComunes = [
+    "Result Time",
+    "Granularity Period",
+    "Object Name",
+    "Reliability",
+  ];
+  const ruta = "./UNIFICADOS/";
 
   for (const x of files) {
-
-    nombreFamilia = x.slice(0, 8)
+    nombreFamilia = x.slice(0, 8);
 
     if (!familias.includes(nombreFamilia)) {
-        familias.push(nombreFamilia)
-    } 
+      familias.push(nombreFamilia);
+    }
   }
-  
-   for (const x of familias) {
-  
-    if(x === '50331648'){
 
-/*       #FAMILIA 13
+  for (const x of familias) {
+    if (x === "50331648") {
+      /*       #FAMILIA 13
       datax['HSDPA_THROUGHPUT_DEN_NONE']=(datax['50331745'])
       datax['HSDPA_THROUGHPUT_NUM_NONE']=(datax['50331746']) */
-      familia = ruta+x+'.csv';
-      contadores = ['50331745', '50331746']  
-      procesarFamilia(familia,contadores)  
+      familia = ruta + x + ".csv";
+      contadores = ["50331745", "50331746"];
+      kpi = ["HSDPA_THROUGHPUT"];
+      procesarFamilia(
+        familia,
+        columnasComunes.concat(contadores),
+        columnasComunes.concat(kpi)
+      );
     }
- /* 
+    /* 
      if(x === '67109365'){
       host03 = ruta+x+'_HOST03.csv'
       host12 = ruta+x+'_HOST12.csv'      
@@ -63,7 +71,7 @@ function leerDirectorio_unificado(){
       host12 = ruta+x+'_HOST12.csv'      
       contadores = ['67179921','67179922','67179923','67179924','67179925','67179926','67179927','67179928']      
     }
-         
+
     if(x === '67109368'){
       host03 = ruta+x+'_HOST03.csv'
       host12 = ruta+x+'_HOST12.csv'      
@@ -123,64 +131,67 @@ function leerDirectorio_unificado(){
       host12 = ruta+x+'_HOST12.csv'      
       contadores = ['67179778','67179779','67179781','67179782','73421882','73421883','73421886','73422166']
     } */
-
-    
-  } 
+  }
 }
-async function procesarFamilia(familia,contadores) {
-  try { 
+async function procesarFamilia(familia, contadores, kpi) {
+  try {
+    const arreglo = [],
+      arregloFinal = [];
+    const fechaHoraEjecucion = new Date().toLocaleString("es-ES", {
+      timeZone: "America/Caracas",
+    });
+    const rows = await leerFilas(familia, {});
+    let newHeader = [],
+      newHeaderFinal = [];
 
-        //console.log(contadores);
-
-        const arregloFinal = [];
-        const arregloFinal2 = [];
-
-        const fechaHoraEjecucion = new Date().toLocaleString("es-ES", { timeZone: "America/Caracas" });
-        const rows  = await leerFilas(familia, {});
-        //console.log(`⏳ Procesando familia ${nombreFamilia} - Fecha: ${fecha} Hora: ${hora} - Inicio: ${fechaHoraEjecucion} \n`)
-        let newHeader = []
-    
-        for (let y = 0; y < rows.length; y++) {
-          let miObjeto = {}
-          for (let x = 0; x < contadores.length; x++) {
-            miObjeto[contadores[x]] = rows[y][contadores[x]]
-            
-         }
-          arregloFinal.push(miObjeto)
-        }
-        
-
-
-          
-         for (let i = 1; i < arregloFinal.length; i++) {
-          let miObjeto = {}
-          if (Number(arregloFinal[i]['50331745']) == 0) {
-            miObjeto[i] = 0
-            newHeader[i]  = {'id': 'HSDPA_THROUGHPUT'[i], 'title':'HSDPA_THROUGHPUT'[i]}  
-          } else {
-            //res.push(Number(arregloFinal[i]['50331746']) /  Number(arregloFinal[i]['50331745']))
-            miObjeto[i] = Number(arregloFinal[i]['50331746']) /  Number(arregloFinal[i]['50331745'])
-            newHeader[i] = {'id': 'HSDPA_THROUGHPUT'[i], 'title':'HSDPA_THROUGHPUT'[i]}         
-          }
-          
-          arregloFinal2.push(miObjeto)
-        }
-       
-        //console.log(arregloFinal2);
- 
-/*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/          
-      const csvWriter = createCsvWriter({
-        path:  './FAMILIAKPI/'+familia+'.csv',
-        header: newHeader
-      });
-
-       csvWriter
-       .writeRecords(arregloFinal2)
-       .then( ()=> console.log(`⁙ Creando el archivo de contadores unificado ${nombreFamilia}.csv de la familia ${nombreFamilia} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`) ); 
-/********************************************************************************************************************************************************************************/
-      } catch (error) {
-          console.error(`🐞 Error:`, error.message);
+    for (let y = 0; y < rows.length; y++) {
+      let miObjeto = {};
+      for (let x = 0; x < contadores.length; x++) {
+        miObjeto[contadores[x]] = rows[y][contadores[x]];
+        newHeader[x] = { id: contadores[x], title: contadores[x] };
       }
+      arreglo.push(miObjeto);
+    }
+
+    for (let y = 1; y < arreglo.length; y++) {
+      let miObjeto2 = {};
+      let res;
+
+      if (Number(arreglo[y]["50331745"]) == 0) {
+        res = 0;
+      } else {
+        res = Number(arreglo[y]["50331746"]) / Number(arreglo[y]["50331745"]);
+      }
+
+      for (let x = 0; x < kpi.length; x++) {
+        if (kpi[x] === "HSDPA_THROUGHPUT") {
+          miObjeto2[kpi[x]] = res;
+        } else {
+          miObjeto2[kpi[x]] = rows[y][kpi[x]];
+        }
+
+        newHeaderFinal[x] = { id: kpi[x], title: kpi[x] };
+      }
+      arregloFinal.push(miObjeto2);
+    }
+
+    /*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/
+    const csvWriter = createCsvWriter({
+      path: "./FAMILIAKPI/" + familia.slice(13, 25),
+      header: newHeaderFinal,
+    });
+
+    csvWriter
+      .writeRecords(arregloFinal)
+      .then(() =>
+        console.log(
+          `⁙ Creando el archivo de contadores unificado ${nombreFamilia}.csv de la familia ${nombreFamilia} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`
+        )
+      );
+    /********************************************************************************************************************************************************************************/
+  } catch (error) {
+    console.error(`🐞 Error:`, error.message);
+  }
 }
 
-leerDirectorio_unificado()
+leerDirectorio_unificado();

@@ -50,9 +50,16 @@ function leerDirectorio_unificado() {
       familia = ruta + x + ".csv";
       contadores = ["50331745", "50331746"];
       kpi = ["HSDPA_THROUGHPUT"];
+
+      procesarFamilia(
+        familia,
+        columnasComunes.concat(contadores),
+        columnasComunes.concat(kpi)
+      );
+
+
     }
 
-    /*
     if (x === "67109365") {
       familia = ruta + x + ".csv";
       contadores = [
@@ -70,7 +77,7 @@ function leerDirectorio_unificado() {
         "67179344",
         "67179345",
         "67179346",
-        "67179347",
+        "67179347",///
         "67179348",
         "67179457",
         "67179458",
@@ -93,6 +100,15 @@ function leerDirectorio_unificado() {
         "U_RRC_SETUP_SUCCESS_RATIO_DEN_NONE",
         "U_RRC_SETUP_SUCCESS_RATIO_NUM_NONE",
       ];
+
+
+      procesarFamilia(
+        familia,
+        columnasComunes.concat(contadores),
+        columnasComunes.concat(kpi)
+      );
+
+
     }
     /*
     if(x === '67109372'){
@@ -161,11 +177,7 @@ function leerDirectorio_unificado() {
       contadores = ['67179778','67179779','67179781','67179782','73421882','73421883','73421886','73422166']
     } */
 
-    procesarFamilia(
-      familia,
-      columnasComunes.concat(contadores),
-      columnasComunes.concat(kpi)
-    );
+
   }
 }
 
@@ -198,10 +210,10 @@ async function procesarFamilia(familia, contadores, kpi) {
     arreglo = recorrerFamiliaContadores(rows, contadores);
 
     let fam = familia.slice(13, 21);
+  
     switch (fam) {
-      case fam:
-        "50331648";
-        
+      case "50331648":
+     
         for (let y = 1; y < arreglo.length; y++) {
           let miObjeto2 = {};
           let res;
@@ -224,10 +236,34 @@ async function procesarFamilia(familia, contadores, kpi) {
           arregloFinal.push(miObjeto2);
         }
 
-        break;
+      break;
 
-      default:
-        break;
+      case '67109365':
+
+        for (let y = 1; y < arreglo.length; y++) {
+          let miObjeto2 = {};
+          let res_den = 0, res_num = 0;
+
+          res_den = Number(arreglo[y]['67179329'])+Number(arreglo[y]['67179330'])+Number(arreglo[y]['67179331'])+Number(arreglo[y]['67179332'])+Number(arreglo[y]['67179333'])+Number(arreglo[y]['67179334'])+Number(arreglo[y]['67179335'])+Number(arreglo[y]['67179336'])+Number(arreglo[y]['67179337'])+Number(arreglo[y]['67179338'])+Number(arreglo[y]['67179348'])+Number(arreglo[y]['67179343'])+Number(arreglo[y]['67179344'])+Number(arreglo[y]['67179345'])+Number(arreglo[y]['67179346'])+Number(arreglo[y]['67179347']);
+          res_num = Number(arreglo[y]['67179457'])+Number(arreglo[y]['67179458'])+Number(arreglo[y]['67179459'])+Number(arreglo[y]['67179460'])+Number(arreglo[y]['67179461'])+Number(arreglo[y]['67179462'])+Number(arreglo[y]['67179463'])+Number(arreglo[y]['67179464'])+Number(arreglo[y]['67179465'])+Number(arreglo[y]['67179466'])+Number(arreglo[y]['67179476'])+Number(arreglo[y]['67179471'])+Number(arreglo[y]['67179472'])+Number(arreglo[y]['67179473'])+Number(arreglo[y]['67179474']);
+    
+          for (let x = 0; x < kpi.length; x++) {
+  
+            if (kpi[x] === "U_RRC_SETUP_SUCCESS_RATIO_NUM_NONE") {
+              miObjeto2[kpi[x]] = res_num;
+            } else if (kpi[x] === "U_RRC_SETUP_SUCCESS_RATIO_DEN_NONE") {
+              miObjeto2[kpi[x]] = res_den;
+            }else{
+              miObjeto2[kpi[x]] = rows[y][kpi[x]];
+            }
+            
+            newHeaderFinal[x] = { id: kpi[x], title: kpi[x] };
+          }
+          arregloFinal.push(miObjeto2);
+        }
+
+      break;
+
     }
 
     /*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/
@@ -240,7 +276,7 @@ async function procesarFamilia(familia, contadores, kpi) {
       .writeRecords(arregloFinal)
       .then(() =>
         console.log(
-          `⁙ Creando el archivo de contadores unificado ${nombreFamilia}.csv de la familia ${nombreFamilia} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`
+          `⁙ Creando el archivo de contadores unificado ${familia.slice(13, 25)}.csv de la familia ${familia.slice(13, 25)} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`
         )
       );
     /********************************************************************************************************************************************************************************/

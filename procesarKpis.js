@@ -266,6 +266,7 @@ async function procesarFamilia(familia, contadores, kpi) {
 
     }
 
+    //console.log(arregloFinal);
     /*********************************************** Escribe la salida en un nuevo archivo csv con sus contadores especificos ******************************************************/
     const csvWriter = createCsvWriter({
       path: "./FAMILIAKPI/" + familia.slice(13, 25),
@@ -276,7 +277,7 @@ async function procesarFamilia(familia, contadores, kpi) {
       .writeRecords(arregloFinal)
       .then(() =>
         console.log(
-          `⁙ Creando el archivo de contadores unificado ${familia.slice(13, 25)}.csv de la familia ${familia.slice(13, 25)} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`
+          `⁙ Creando el archivo con los kpis ${familia.slice(13, 21)}.csv de la familia ${familia.slice(13, 21)} con éxito. - Fin: ${fechaHoraEjecucion} ⁙\n`
         )
       );
     /********************************************************************************************************************************************************************************/
